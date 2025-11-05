@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { ticketData } from "../assets/data/ticketData";
 import api from "../utils/api";
+import { useRouter } from "next/navigation";
 
 const TicketDashboard = () => {
-
   //Ticket state for testing with static data
   // const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
 
@@ -64,9 +64,11 @@ const TicketDashboard = () => {
   const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
   const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   // ✅ Fetch tickets from API
   const fetchTickets = async () => {
+    setLoading(true);
     try {
       const response = await api.get("/getIssues"); // or your endpoint
       const apiData = response.data?.issues || [];
@@ -138,6 +140,18 @@ const TicketDashboard = () => {
   useEffect(() => {
     fetchTickets();
   }, []);
+
+
+  //Loader component
+  const Loader = () => (
+  <div className="flex justify-center items-center h-[60vh]">
+    <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-blue-600"></div>
+  </div>
+);
+
+if (loading) {
+  return <Loader />;
+}
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -286,6 +300,12 @@ const TicketDashboard = () => {
             <p className="text-gray-700">
               Long Description: {selectedTicket.longDescription}
             </p>
+            <button
+              onClick={() => router.push(`/issueDetails?id=${selectedTicket.id}`)}
+              className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 rounded-md transition"
+            >
+              View Full Issue Details →
+            </button>
           </div>
         </div>
       )}
