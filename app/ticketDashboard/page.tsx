@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { ticketData } from "../assets/data/ticketData";
-import api from "../utils/api";
+import createApi from "../utils/api";
 import { useRouter } from "next/navigation";
 
 const TicketDashboard = () => {
@@ -70,6 +70,7 @@ const TicketDashboard = () => {
   const fetchTickets = async () => {
     setLoading(true);
     try {
+      const api = createApi();
       const response = await api.get("/getIssues"); // or your endpoint
       const apiData = response.data?.issues || [];
 
@@ -231,8 +232,7 @@ if (loading) {
       {/* Modal */}
       {selectedTicket && (
         <div
-          className="fixed inset-0 flex justify-center items-center z-50"
-          style={{ backgroundColor: "rgba(15, 23, 42, 0.5)" }}
+          className="fixed inset-0 flex justify-center items-center z-50 bg-[rgba(15,23,42,0.5)]"
         >
           <div className="bg-white max-w-lg w-full mx-4 rounded-lg shadow-lg p-6 relative">
             <button

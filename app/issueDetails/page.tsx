@@ -327,8 +327,7 @@ export default function IssueDetailsPage() {
       </div>
       {isModalOpen && (
         <div
-          className="fixed inset-0 flex justify-center items-center z-50"
-          style={{ backgroundColor: "rgba(15, 23, 42, 0.5)" }}
+          className="fixed inset-0 flex justify-center items-center z-50 bg-[rgba(15,23,42,0.5)]"
         >
           <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-6 relative max-h-[80vh] overflow-y-auto">
             {/* Close */}
@@ -353,6 +352,7 @@ export default function IssueDetailsPage() {
                 setSelectedCode(e.target.value);
                 setSelectedSubCode(""); // Reset second dropdown
               }}
+              aria-label="Select issue code"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4"
             >
               <option value="" disabled>
@@ -374,6 +374,7 @@ export default function IssueDetailsPage() {
                 <select
                   value={selectedSubCode}
                   onChange={(e) => setSelectedSubCode(e.target.value)}
+                  aria-label="Select info code"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4"
                 >
                   <option value="" disabled>
@@ -397,6 +398,7 @@ export default function IssueDetailsPage() {
                 <select
                   value={selectedSubCode}
                   onChange={(e) => setSelectedSubCode(e.target.value)}
+                  aria-label="Select resolution type"
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4"
                 >
                   <option value="" disabled>
