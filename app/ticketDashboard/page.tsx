@@ -99,15 +99,15 @@ const TicketDashboard = () => {
           status === "OPEN"
             ? "border-yellow-500"
             : status === "PROCESSING"
-            ? "border-blue-500"
-            : "border-green-500";
+              ? "border-blue-500"
+              : "border-green-500";
 
         const priority =
           status === "OPEN"
             ? "High"
             : status === "PROCESSING"
-            ? "Medium"
-            : "Low";
+              ? "Medium"
+              : "Low";
 
         return {
           id: summary.issue_id || issue._id,
@@ -145,14 +145,14 @@ const TicketDashboard = () => {
 
   //Loader component
   const Loader = () => (
-  <div className="flex justify-center items-center h-[60vh]">
-    <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-blue-600"></div>
-  </div>
-);
+    <div className="flex justify-center items-center h-[60vh]">
+      <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-blue-600"></div>
+    </div>
+  );
 
-if (loading) {
-  return <Loader />;
-}
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -202,25 +202,23 @@ if (loading) {
               </p>
 
               <span
-                className={`mt-2 px-2 py-1 rounded-full text-xs font-semibold ${
-                  ticket.status === "OPEN"
+                className={`mt-2 px-2 py-1 rounded-full text-xs font-semibold ${ticket.status === "OPEN"
                     ? "bg-yellow-100 text-yellow-700"
                     : ticket.status === "PROCESSING"
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-green-100 text-green-700"
-                }`}
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-green-100 text-green-700"
+                  }`}
               >
                 Status: {ticket.status}
               </span>
 
               <span
-                className={`mt-2 px-2 py-1 rounded-full text-xs font-semibold ${
-                  ticket.priority === "High"
+                className={`mt-2 px-2 py-1 rounded-full text-xs font-semibold ${ticket.priority === "High"
                     ? "bg-red-100 text-red-700"
                     : ticket.priority === "Medium"
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-green-100 text-green-700"
-                }`}
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-green-100 text-green-700"
+                  }`}
               >
                 Priority: {ticket.priority}
               </span>
