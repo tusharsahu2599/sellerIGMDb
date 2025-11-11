@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Clock, User, Tag, Ticket } from "lucide-react";
-import api from "../utils/api";
+import createApi from "../utils/api";
 import { useEffect, useState } from "react";
 
 export default function IssueDetailsPage() {
@@ -41,6 +41,7 @@ export default function IssueDetailsPage() {
   const fetchTickets = async () => {
     try {
       setLoading(true);
+      const api = createApi();
       const response = await api.get("/getIssueCodes"); // 👈 API Endpoint
 
       // Assuming API returns like this:
@@ -62,6 +63,7 @@ export default function IssueDetailsPage() {
     try {
       setLoading(true);
 
+      const api = createApi();
       const response = await api.post("/getIssueById", { issueId: issueId });
       const summary = response.data?.data?.summary;
 
@@ -85,8 +87,8 @@ export default function IssueDetailsPage() {
           summary.issue_status === "OPEN"
             ? "High"
             : summary.issue_status === "PROCESSING"
-            ? "Medium"
-            : "Low",
+              ? "Medium"
+              : "Low",
         created: new Date(summary.created_at).toLocaleString(),
         updated: new Date(summary.updated_at).toLocaleString(),
         actions: summary?.actions,
@@ -136,18 +138,24 @@ export default function IssueDetailsPage() {
     if (!id && !selectedCode && !selectedSubCode) return;
 
     try {
-      const response = api.post("/getIssueInfo", {
-        issueId: id,
-        code: selectedCode.toUpperCase(),
-        infoCode: selectedSubCode,
-        shortDesc: description,
-        refundAmount: +refundAmount,
-      });
-      console.log("Issue Info Request Response:", response);
-      closeModal();
-      setTimeout(() => {
-        fetchIssueById(id);
-      }, 2000);
+      const api = createApi();
+      api
+        .post("/getIssueInfo", {
+          issueId: id,
+          code: selectedCode.toUpperCase(),
+          infoCode: selectedSubCode,
+          shortDesc: description,
+          refundAmount: +refundAmount,
+        })
+        .then((response) => {
+          console.log("Issue Info Request Response:", response);
+          closeModal();
+          // refetch after a short delay to let backend process
+          setTimeout(() => fetchIssueById(id), 2000);
+        })
+        .catch((error) => {
+          console.error("❌ Error sending issue info request:", error);
+        });
     } catch (error) {
       console.error("❌ Error sending issue info request:", error);
     }
@@ -206,25 +214,23 @@ export default function IssueDetailsPage() {
 
         <div className="flex flex-wrap gap-2 pt-2">
           <span
-            className={`px-2 py-1 text-xs rounded-full font-semibold ${
-              issue.status === "OPEN"
-                ? "bg-yellow-100 text-yellow-700"
-                : issue.status === "PROCESSING"
+            className={`px-2 py-1 text-xs rounded-full font-semibold ${issue.status === "OPEN"
+              ? "bg-yellow-100 text-yellow-700"
+              : issue.status === "PROCESSING"
                 ? "bg-blue-100 text-blue-700"
                 : "bg-green-100 text-green-700"
-            }`}
+              }`}
           >
             Status: {issue.status}
           </span>
 
           <span
-            className={`px-2 py-1 text-xs rounded-full font-semibold ${
-              issue.priority === "High"
-                ? "bg-red-100 text-red-700"
-                : issue.priority === "Medium"
+            className={`px-2 py-1 text-xs rounded-full font-semibold ${issue.priority === "High"
+              ? "bg-red-100 text-red-700"
+              : issue.priority === "Medium"
                 ? "bg-yellow-100 text-yellow-700"
                 : "bg-green-100 text-green-700"
-            }`}
+              }`}
           >
             Priority: {issue.priority}
           </span>
@@ -285,15 +291,14 @@ export default function IssueDetailsPage() {
               {/* Status Chip */}
               <span
                 className={`mt-1 inline-block text-xs px-2 py-1 rounded-full font-semibold
-          ${
-            step.descriptor.code === "OPEN"
-              ? "bg-yellow-100 text-yellow-700"
-              : step.descriptor.code === "PROCESSING"
-              ? "bg-blue-100 text-blue-700"
-              : step.descriptor.code === "INFO_REQUESTED"
-              ? "bg-purple-100 text-purple-700"
-              : "bg-green-100 text-green-700"
-          }`}
+          ${step.descriptor.code === "OPEN"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : step.descriptor.code === "PROCESSING"
+                      ? "bg-blue-100 text-blue-700"
+                      : step.descriptor.code === "INFO_REQUESTED"
+                        ? "bg-purple-100 text-purple-700"
+                        : "bg-green-100 text-green-700"
+                  }`}
               >
                 {step.descriptor.code}
               </span>
